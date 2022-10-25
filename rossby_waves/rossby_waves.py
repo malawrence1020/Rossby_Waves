@@ -149,8 +149,8 @@ class RossbyWave:
         return psi
 
     def plot_streamfunction(self,
-                            xlim=(-2500, 2500, 5000),
-                            ylim=(-2500, 2500, 5000),
+                            xlim=(-2000, 2000, 256),
+                            ylim=(-2000, 2000, 256),
                             t=0,
                             lines=50,
                             filled=True):
@@ -179,7 +179,9 @@ class RossbyWave:
         x = np.linspace(*xlim)
         y = np.linspace(*ylim)
         X, Y = np.meshgrid(x, y)
-        Z = self.streamfunction(X, Y, t)
+        # Pre-true-scaling modification for plotting purposes
+        Z = self.streamfunction(X*1e4, Y*1e4, t*1e6)
+        plt.figure()
         if filled:
             plt.contourf(X, Y, Z, lines, cmap="coolwarm")
         else:
@@ -189,12 +191,12 @@ class RossbyWave:
         cbar = plt.colorbar(pad=0.1)
         cbar.ax.set_ylabel("Stream Function value")
         plt.title(f"t={time} days")
-        # plt.savefig('test.png')
+        plt.savefig('test.png')
 
     def animate_streamfunction(self,
-                               xlim=(-2500, 2500, 5000),
-                               ylim=(-2500, 2500, 5000),
-                               tlim=(0, 3500, 3500),
+                               xlim=(-2000, 2000, 256),
+                               ylim=(-2000, 2000, 256),
+                               tlim=(0, 100, 100),
                                lines=50,
                                filled=True,
                                filename="streamfunction"):
@@ -225,7 +227,7 @@ class RossbyWave:
         xx, yy = np.meshgrid(x, y)
         Y, T, X = np.meshgrid(y, t, x)
         fig, ax = plt.subplots(1)
-        stream = self.streamfunction(X, Y, T)
+        stream = self.streamfunction(X*1e4, Y*1e4, T*1e6)
 
         def init_func():
             plt.cla()
