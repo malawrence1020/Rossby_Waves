@@ -56,6 +56,75 @@ def dispersion(wavevector):
     omega = -beta * wavevector[0] / (wavevector[0]**2 + wavevector[1]**2 + Rd**-2)
     return omega
 
+def plot_amplitude2D(xlim=(-5e-6, 5e-6, 256),
+                     ylim=(-5e-6, 5e-6, 256),
+                     levels=50,
+                     filename="amplitude2D"):
+    """
+    2D Contour plot of the amplitude of a Rossby wave.
+
+    Parameters
+    ----------
+    xlim : array_like
+        (x start, x end, x points)
+    ylim : array_like
+        (y start, y end, y points)
+    levels : float
+        number of contours
+    filename : str
+        file saved as {filename}.png
+
+    Returns
+    -------
+    """
+    x = np.linspace(*xlim)
+    y = np.linspace(*ylim)
+    X, Y = np.meshgrid(x, y)
+    amp = amplitude([X, Y])
+    fig = plt.figure()
+    ax = fig.add_subplot()
+    plot = ax.contourf(X, Y, amp, levels, cmap="coolwarm")
+    cbar = fig.colorbar(plot, pad=0.05)
+    cbar.ax.set_ylabel('amplitude, m^2/s')
+    ax.set_xlabel('k, 1/m')
+    ax.set_ylabel('l, 1/m')
+    plt.title('Amplitude in spectral space')
+    plt.savefig(f'{filename}.png')
+
+def plot_amplitude3D(xlim=(-5e-6, 5e-6, 256),
+                     ylim=(-5e-6, 5e-6, 256),
+                     levels=100,
+                     filename="amplitude3D"):
+    """
+    3D Contour plot of the amplitude of a Rossby wave.
+
+    Parameters
+    ----------
+    xlim : array_like
+        (x start, x end, x points)
+    ylim : array_like
+        (y start, y end, y points)
+    levels : float
+        number of contours
+    filename : str
+        file saved as {filename}.png
+
+    Returns
+    -------
+    """
+    x = np.linspace(*xlim)
+    y = np.linspace(*ylim)
+    X, Y = np.meshgrid(x, y)
+    amp = amplitude([X, Y])
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+    ax.contourf(X, Y, amp, levels, cmap="coolwarm")
+    ax.set_xlabel('k, 1/m')
+    ax.set_ylabel('l, 1/m')
+    ax.set_zlabel('amplitude, m^2/s')
+    plt.title('Amplitude in spectral space')
+    plt.savefig(f'{filename}.png')
+
 
 class RossbyWave:
     """
@@ -69,10 +138,10 @@ class RossbyWave:
         1st component of wavevector
     l : float
         2nd component of wavevector
-    phase : float
-        phase of the wave
-    beta : float
-        scale of sphericity
+    phase1 : float
+        phase of the wave (solenoidal)
+    phase2 : float
+        phase of the wave (irrotational)
 
     Methods
     -------
@@ -106,70 +175,26 @@ class RossbyWave:
         Animate the quiver plot of the velocity field of a Rossby wave.
     """
 
-    def __init__(self, wavevector, phase=0):
+    def __init__(self, wavevector, phase1=0, phase2=0):
         self.wavevector = list(wavevector)
         self.k = wavevector[0]
         self.l = wavevector[1]
-        self.phase = phase
+        self.phase1 = phase1
+        self.phase2 = phase2
         self.omega = -beta * wavevector[0] / (wavevector[0]**2 +
                                               wavevector[1]**2 + Rd**-2)
         self.amplitude = (np.exp(-wavevector[0]**2 / n**2 - wavevector[1]**2 /
                                 n**2) * (wavevector[0]**2 + wavevector[1]**2)) * alpha
 
     def __str__(self):
-        """Return string representation: RossbyWave([k, l], phase)."""
+        """Return string representation: RossbyWave([k, l], phase1, phase2)."""
         return self.__class__.__name__ + "(" + str(
-            self.wavevector) + ", " + str(self.phase) + ")"
+            self.wavevector) + ", " + str(self.phase1) + ", " + str(self.phase2) + ")"
 
     def __repr__(self):
-        """Return canonical string representation: RossbyWave([k, l], phase)."""
+        """Return canonical string representation: RossbyWave([k, l], phase1, phase2)."""
         return self.__class__.__name__ + "(" + repr(
-            self.wavevector) + ", " + repr(self.phase) + ")"
-            
-    def plot_amplitude(self,
-                       xlim=(-5e-6, 5e-6, 256),
-                       ylim=(-5e-6, 5e-6, 256),
-                       levels=50,
-                       dim_3=False,
-                       filename="amplitude"):
-        """
-        2D Contour plot of the amplitude of a Rossby wave.
-
-        Parameters
-        ----------
-        xlim : array_like
-            (x start, x end, x points)
-        ylim : array_like
-            (y start, y end, y points)
-        lines : float
-            scale of number of lines
-        dim_3 : bool
-            if false, plot 2D contour and if true, plot 3D contour
-        filename : str
-            file saved as {filename}.png
-
-        Returns
-        -------
-        """
-        x = np.linspace(*xlim)
-        y = np.linspace(*ylim)
-        X, Y = np.meshgrid(x, y)
-        # Pre-true-scaling modification for plotting purposes
-        amp = amplitude([X, Y])
-        fig = plt.figure()
-        if dim_3:
-            ax = fig.add_subplot(projection='3d')
-            ax.contourf(X, Y, amp, levels, cmap="coolwarm")
-            ax.set_zlabel('amplitude, m^2/s')
-        else:
-            ax = fig.add_subplot()
-            plot = ax.contourf(X, Y, amp, levels, cmap="coolwarm")
-            cbar = fig.colorbar(plot, pad=0.05)
-            cbar.ax.set_ylabel('amplitude, m^2/s')
-        ax.set_xlabel('k, 1/m')
-        ax.set_ylabel('l, 1/m')
-        plt.title('Amplitude in spectral space')
-        plt.savefig(f'{filename}.png')
+            self.wavevector) + ", " + repr(self.phase1) + ", " + repr(self.phase2) + ")"
 
 
     def streamfunction(self, x, y, t):
@@ -191,7 +216,7 @@ class RossbyWave:
             streamfunction at x at time t
         """
         psi = self.amplitude * np.cos(
-            self.k * x + self.l * y - self.omega * t + self.phase)
+            self.k * x + self.l * y - self.omega * t + self.phase1)
         return psi
 
     def plot_streamfunction(self,
@@ -213,7 +238,7 @@ class RossbyWave:
         t : float
             time
         lines : float
-            scale of number of lines
+            number of contours
         filled : bool
             if false, plot contour and if true, plot filled contour
         filename : str
@@ -261,7 +286,7 @@ class RossbyWave:
         tlim : array_like
             (time start, time end, time points)
         lines : float
-            scale of number of lines
+            number of contours
         filled : bool
             if false, plot contour and if true, plot filled contour
         filename : str
@@ -324,7 +349,8 @@ class RossbyWave:
         phi : float
             potentialfunction at x at time t
         """
-        phi = eps * self.streamfunction(x, y, t)
+        phi = eps * self.amplitude * np.cos(
+            self.k * x + self.l * y - self.omega * t + self.phase2)
         return phi
 
     def velocity(self, x, y, t, eps=0.01, irrotational=False, solenoidal=False):
