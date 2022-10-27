@@ -313,7 +313,7 @@ class RossbyWave:
             plt.ylabel('Y')
             if not isinstance(self, RossbyOcean):
                 plt.title(
-                    f"RossbyWave: k={self.k}, l={self.l}, phase={self.phase}")
+                    f"RossbyWave: k={self.k}, l={self.l}, phase={self.phase1}")
             else:
                 plt.title("RossbyOcean")
             if filled:
