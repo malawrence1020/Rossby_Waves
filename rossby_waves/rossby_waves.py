@@ -54,6 +54,22 @@ def velocity_test(x,y,t=0, klim=(-2, 2, 256),
 
     return velocity
 
+def average_speed(t=0, klim=(-2, 2, 256),
+                     llim=(-2, 2, 256), phase1 = 0, xlim=(-10, 10, 256), ylim=(-10, 10, 256)):
+    """
+    How to
+    """
+    average_speed = 0
+    x_range = np.linspace(*xlim)
+    y_range = np.linspace(*ylim)
+
+    for x in x_range:
+        for y in y_range:
+            velocity = velocity_test(x,y,t,klim,llim,phase1)
+            average_speed += np.linalg.norm(velocity)
+
+    return average_speed/(256**2)
+
 
 def dispersion(wavevector):
     """
