@@ -38,6 +38,20 @@ def amplitude(wavevector):
         wavevector[0]**2 + wavevector[1]**2)
     return amplitude
 
+def velocity_test(x,y,t=0, klim=(-2, 2, 256),
+                     llim=(-2, 2, 256), phase1 = 0):
+    """
+    How to
+    """
+    k_wavenumbers = np.linspace(*klim)
+    l_wavenumbers = np.linspace(*llim)
+    velocity = [0,0]
+    for k in k_wavenumbers:
+        for l in l_wavenumbers:
+            velocity += [-k,l]*amplitude([k,l])*np.sin(k*x + l*y - dispersion([k,l])*t + phase1)
+
+    return velocity
+
 
 def dispersion(wavevector):
     """
