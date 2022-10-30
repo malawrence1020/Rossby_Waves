@@ -56,8 +56,8 @@ def dispersion(wavevector):
     omega = -beta * wavevector[0] / (wavevector[0]**2 + wavevector[1]**2 + Rd**-2)
     return omega
 
-def plot_amplitude2D(xlim=(-5e-6, 5e-6, 256),
-                     ylim=(-5e-6, 5e-6, 256),
+def plot_amplitude2D(xlim=(-2, 2, 256),
+                     ylim=(-2, 2, 256),
                      levels=50,
                      filename="amplitude2D"):
     """
@@ -65,9 +65,9 @@ def plot_amplitude2D(xlim=(-5e-6, 5e-6, 256),
 
     Parameters
     ----------
-    xlim : array_like
-        (x start, x end, x points)
-    ylim : array_like
+    klim : array_like
+        (k start, x end, x points)
+    klim : array_like
         (y start, y end, y points)
     levels : float
         number of contours
