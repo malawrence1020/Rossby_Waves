@@ -34,8 +34,8 @@ def amplitude(wavevector):
     amplitude : float
         amplitude of Rossby wave
     """
-    amplitude = np.exp(-wavevector[0]**2 - wavevector[1]**2) * 
-    (wavevector[0]**2 + wavevector[1]**2)
+    amplitude = np.exp(-wavevector[0]**2 - wavevector[1]**2) * (
+        wavevector[0]**2 + wavevector[1]**2)
     return amplitude
 
 
