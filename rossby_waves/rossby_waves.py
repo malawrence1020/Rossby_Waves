@@ -27,15 +27,15 @@ def amplitude(wavevector):
     Parameters
     ----------
     wavevector : np.ndarray
-        wavevector np.array([k, l]) of wavenumbers
+        wavevector np.array([k, l]) of non-dimensional wavenumbers
 
     Returns
     -------
     amplitude : float
         amplitude of Rossby wave
     """
-    amplitude = alpha * np.exp(-wavevector[0]**2 / n**2 - wavevector[1]**2 /
-                               n**2) * (wavevector[0]**2 + wavevector[1]**2)
+    amplitude = np.exp(-wavevector[0]**2 - wavevector[1]**2) * 
+    (wavevector[0]**2 + wavevector[1]**2)
     return amplitude
 
 
