@@ -46,9 +46,11 @@ def velocity_test(x,y,t=0, klim=(-2, 2, 256),
     k_wavenumbers = np.linspace(*klim)
     l_wavenumbers = np.linspace(*llim)
     velocity = [0,0]
+
     for k in k_wavenumbers:
         for l in l_wavenumbers:
-            velocity += [-k,l]*amplitude([k,l])*np.sin(k*x + l*y - dispersion([k,l])*t + phase1)
+            multiplier = [-k,l]
+            velocity += [i*amplitude([k,l])*np.sin(k*x + l*y - dispersion([k,l])*t + phase1) for i in multiplier]
 
     return velocity
 
