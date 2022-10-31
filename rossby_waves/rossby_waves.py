@@ -51,9 +51,8 @@ def velocity_test(x,y,t=0, klim=(-2, 2, 256),
     for k in k_wavenumbers:
         for l in l_wavenumbers:
             multiplier = [-k, l]
-            velocity += [i*amplitude([k, l])*np.sin(k*x + l*y - dispersion([k, l])*t + phase1) for i in multiplier]
-            # Of course there is nothing wrong with this: as we double the number of wavenumbers we sum over, we double the velocity
-            # There must be some kind of weighting to say how common each wavenumber is, or else the sum would diverge
+            new_velocity = [i*amplitude([k, l])*np.sin(k*x + l*y - dispersion([k, l])*t + phase1) for i in multiplier]
+            velocity = [sum(i) for i in zip(velocity, new_velocity)] 
 
     return velocity
 
