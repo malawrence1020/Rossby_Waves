@@ -38,6 +38,7 @@ def amplitude(wavevector):
         wavevector[0]**2 + wavevector[1]**2)
     return amplitude
 
+
 def velocity_test(x,y,t=0, klim=(-2, 2, 256),
                      llim=(-2, 2, 256), phase1 = 0):
     """
@@ -45,14 +46,17 @@ def velocity_test(x,y,t=0, klim=(-2, 2, 256),
     """
     k_wavenumbers = np.linspace(*klim)
     l_wavenumbers = np.linspace(*llim)
-    velocity = [0,0]
+    velocity = np.array([0.0, 0.0])
 
     for k in k_wavenumbers:
         for l in l_wavenumbers:
-            multiplier = [-k,l]
-            velocity += [i*amplitude([k,l])*np.sin(k*x + l*y - dispersion([k,l])*t + phase1) for i in multiplier]
+            multiplier = [-k, l]
+            velocity += [i*amplitude([k, l])*np.sin(k*x + l*y - dispersion([k, l])*t + phase1) for i in multiplier]
+            # Of course there is nothing wrong with this: as we double the number of wavenumbers we sum over, we double the velocity
+            # There must be some kind of weighting to say how common each wavenumber is, or else the sum would diverge
 
     return velocity
+
 
 def average_speed(t=0, klim=(-2, 2, 256),
                      llim=(-2, 2, 256), phase1 = 0, xlim=(-10, 10, 256), ylim=(-10, 10, 256)):
@@ -65,10 +69,11 @@ def average_speed(t=0, klim=(-2, 2, 256),
 
     for x in x_range:
         for y in y_range:
-            velocity = velocity_test(x,y,t,klim,llim,phase1)
-            average_speed += np.linalg.norm(velocity)
+            velocity = velocity_test(x, y, t, klim, llim, phase1)
+            average_speed += np.sqrt(np.vdot(velocity, velocity))
+            # average_speed += np.linalg.norm(velocity)
 
-    return average_speed/(256**2)
+    return average_speed/(xlim[2]*ylim[2])
 
 
 def dispersion(wavevector):
