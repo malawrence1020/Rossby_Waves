@@ -53,7 +53,7 @@ def velocity_test(x,y,t=0, klim=(-2, 2, 256),
             new_velocity = [i*amplitude([k, l])*np.sin(k*x + l*y - dispersion([k, l])*t + phase1) for i in multiplier]
             velocity = [sum(i) for i in zip(velocity, new_velocity)] 
 
-    return velocity
+    return velocity/(len(k_wavenumbers)*len(l_wavenumbers))
 
 
 def average_speed(t=0, klim=(-2, 2, 256),
