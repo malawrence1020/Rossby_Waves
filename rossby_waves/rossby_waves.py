@@ -38,8 +38,8 @@ def amplitude(wavevector):
     return amplitude
 
 
-def velocity_test(x,y,t=0, klim=(-2, 2, 256),
-                     llim=(-2, 2, 256), phase1 = 0):
+def velocity_test(x,y,t=0, klim=(-2, 2, 16),
+                     llim=(-2, 2, 16), phase1 = 0):
     """
     How to
     """
@@ -53,11 +53,12 @@ def velocity_test(x,y,t=0, klim=(-2, 2, 256),
             new_velocity = [i*amplitude([k, l])*np.sin(k*x + l*y - dispersion([k, l])*t + phase1) for i in multiplier]
             velocity = [sum(i) for i in zip(velocity, new_velocity)] 
 
-    return velocity/(len(k_wavenumbers)*len(l_wavenumbers))
+    velocity = [velocity[0]/(klim[2]*llim[2]), velocity[1]/(klim[2]*llim[2])]
+    return velocity
 
 
-def average_speed(t=0, klim=(-2, 2, 256),
-                     llim=(-2, 2, 256), phase1 = 0, xlim=(-10, 10, 256), ylim=(-10, 10, 256)):
+def average_speed(t=0, klim=(-2, 2, 16),
+                     llim=(-2, 2, 16), phase1 = 0, xlim=(-5, 5, 16), ylim=(-5, 5, 16)):
     """
     How to
     """
@@ -69,7 +70,6 @@ def average_speed(t=0, klim=(-2, 2, 256),
         for y in y_range:
             velocity = velocity_test(x, y, t, klim, llim, phase1)
             average_speed += np.sqrt(np.vdot(velocity, velocity))
-            # average_speed += np.linalg.norm(velocity)
 
     return average_speed/(xlim[2]*ylim[2])
 

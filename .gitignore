@@ -127,3 +127,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+fortran/amplitude.o
+fortran/dispersion.o
+fortran/average_velocity.o
+fortran/avg_vel
